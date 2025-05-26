@@ -1,6 +1,6 @@
 #include "Grid.h"
 
-void Grid::Draw() noexcept
+void Grid::Draw()
 {
 	int cols = m_Width / m_CellSize;
 	int rows = m_Height / m_CellSize;
@@ -27,8 +27,14 @@ void Grid::Draw() noexcept
 	}
 }
 
-void Grid::DrawAppleAt(const Vector2& position) noexcept
+void Grid::DrawAppleAt(const Vector2& position)
 {
 	int halfSize = m_CellSize / 2;
 	DrawCircle(position.x * m_CellSize + halfSize, position.y * m_CellSize + halfSize, halfSize / 2, Color{ 255, 0, 0, 255 });
+}
+
+void Grid::DrawTale(const Tale& tale)
+{
+	DrawRectangle(tale.Positon.x * m_CellSize,
+		tale.Positon.y * m_CellSize, m_CellSize, m_CellSize, tale.Color);
 }

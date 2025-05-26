@@ -1,6 +1,8 @@
 #pragma once
 
-#include "raylib.h"
+#include "Tale.h"
+
+#include <cmath>
 
 class Grid
 {
@@ -10,8 +12,14 @@ public:
 	Grid(const Grid&) = delete;
 	Grid(Grid&&) noexcept = delete;
 
-	void Draw() noexcept;
-	void DrawAppleAt(const Vector2& position) noexcept;
+	void Draw();
+	void DrawAppleAt(const Vector2& position);
+	void DrawTale(const Tale& tale);
+
+	inline Vector2 GetGridSize() const 
+	{ 
+		return Vector2{ std::ceilf(m_Width / m_CellSize), std::ceilf(m_Height / m_CellSize) };
+	}
 private:
 	int m_Width;
 	int m_Height;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Grid.h"
+#include <vector>
 
 class Game
 {
@@ -14,6 +15,17 @@ public:
 
 	void Close();
 private:
+	float GetDeltaTime();
+	void UpdateHeadDirection();
+	void UpdateTalesPosition();
+private:
 	void* m_WindowHandle = nullptr;
 	Grid m_Grid{1200, 900, 50};
+
+	std::vector<Tale> m_Tales;
+
+	const Vector2 Up{ 0, -1 };
+	const Vector2 Down{ 0, 1 };
+	const Vector2 Left{ -1, 0 };
+	const Vector2 Right{ 1, 0 };
 };
