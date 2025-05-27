@@ -9,8 +9,13 @@ void Game::Init()
 	m_WindowHandle = GetWindowHandle();
 
 	m_Tales.reserve(50);
+	m_Tales.push_back(Tale{ {11, 8}, {120, 0, 0, 255} });
+	m_Tales.push_back(Tale{ {12, 8}, {193, 18, 31, 255} });
+	m_Tales.push_back(Tale{ {13, 8}, {120, 0, 0, 255} });
+	m_Tales.push_back(Tale{ {14, 8}, {193, 18, 31, 255} });
 
-	m_Tales.push_back(Tale{ {11, 8}, {-1, 0}, {255, 0, 255, 255} });
+
+	m_HeadDirection = Up;
 }
 
 void Game::Update()
@@ -19,12 +24,10 @@ void Game::Update()
 
 	while (!WindowShouldClose())
 	{
-		
 		timer += GetDeltaTime();
 
 		UpdateHeadDirection();
-
-		if (timer >= 0.5)
+		if (timer >= 0.25)
 		{
 			UpdateTalesPosition();
 			timer = 0;
@@ -35,7 +38,6 @@ void Game::Update()
 
 		m_Grid.Draw();
 		m_Grid.DrawAppleAt(Vector2{ 1,1 });
-
 
 		for (const Tale& tale : m_Tales)
 		{
@@ -65,54 +67,33 @@ float Game::GetDeltaTime()
 
 void Game::UpdateHeadDirection()
 {
-	Vector2 headDirection = m_Tales[0].Direction;
-
 	int keyCode = GetKeyPressed();
 	if (keyCode == KEY_W)
 	{
-		headDirection = Up;
+		m_HeadDirection = Up;
 	}
 	else if (keyCode == KEY_S)
 	{
-		headDirection = Down;
+		m_HeadDirection = Down;
 	}
 	else if (keyCode == KEY_A)
 	{
-		headDirection = Left;
+		m_HeadDirection = Left;
 	}
 	else if (keyCode == KEY_D)
 	{
-		headDirection = Right;
+		m_HeadDirection = Right;
 	}
-
-	m_Tales[0].Direction = headDirection;
 }
-
 void Game::UpdateTalesPosition()
 {
 	Vector2 GridSize = m_Grid.GetGridSize();
 
-	for (Tale& tale : m_Tales)
+	for (int i = m_Tales.size() - 1; i >= 1; i--)
 	{
-		tale.Positon.x += tale.Direction.x;
-		tale.Positon.y += tale.Direction.y;
-
-		if (tale.Positon.x < 0)
-		{
-			tale.Positon.x = GridSize.x;
-		}
-		else if (tale.Positon.x > GridSize.x)
-		{
-			tale.Positon.x = 0;
-		}
-
-		if (tale.Positon.y < 0)
-		{
-			tale.Positon.y = GridSize.y;
-		}
-		else if (tale.Positon.y > GridSize.y)
-		{
-			tale.Positon.y = 0;
-		}
+		m_Tales[i].Positon = m_Tales[i - 1].Positon;
 	}
+
+	m_Tales[0].Positon.x += m_HeadDirection.x;
+	m_Tales[0].Positon.y += m_HeadDirection.y;
 }

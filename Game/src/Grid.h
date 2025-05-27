@@ -1,8 +1,14 @@
 #pragma once
 
-#include "Tale.h"
+#include "raylib.h"
 
 #include <cmath>
+
+struct Tale
+{
+	Vector2 Positon;
+	Color Color;
+};
 
 class Grid
 {

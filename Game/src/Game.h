@@ -21,8 +21,9 @@ private:
 private:
 	void* m_WindowHandle = nullptr;
 	Grid m_Grid{1200, 900, 50};
-
 	std::vector<Tale> m_Tales;
+
+	Vector2 m_HeadDirection;
 
 	const Vector2 Up{ 0, -1 };
 	const Vector2 Down{ 0, 1 };
