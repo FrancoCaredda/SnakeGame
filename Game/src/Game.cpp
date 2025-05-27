@@ -13,6 +13,9 @@ void Game::Init()
 	m_Tales.push_back(Tale{ {11, 8}, m_TaleColor2});
 
 	UpdateApplePosition();
+
+	m_Grid.BakeBackground();
+
 	m_HeadDirection = Up;
 }
 
@@ -44,7 +47,7 @@ void Game::Update()
 		BeginDrawing();
 		ClearBackground(Color{ 0, 0, 0, 1 });
 
-		m_Grid.Draw();
+		m_Grid.DrawBackground();
 		m_Grid.DrawAppleAt(m_ApplePosition);
 
 		for (const Tale& tale : m_Tales)

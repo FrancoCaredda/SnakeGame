@@ -18,7 +18,19 @@ public:
 	Grid(const Grid&) = delete;
 	Grid(Grid&&) noexcept = delete;
 
+	~Grid()
+	{
+		if (IsTextureValid(m_Background.texture))
+		{
+			UnloadRenderTexture(m_Background);
+		}
+	}
+
+
+	void BakeBackground();
+
 	void Draw();
+	void DrawBackground();
 	void DrawAppleAt(const Vector2& position);
 	void DrawTale(const Tale& tale);
 
@@ -33,4 +45,6 @@ private:
 
 	Color m_Color1{ 83, 245, 83, 255 };
 	Color m_Color2{ 63, 186, 63, 255 };
+
+	RenderTexture2D m_Background;
 };

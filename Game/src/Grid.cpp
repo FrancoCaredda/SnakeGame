@@ -1,5 +1,20 @@
 #include "Grid.h"
 
+void Grid::BakeBackground()
+{
+	if (!IsTextureValid(m_Background.texture))
+	{
+		m_Background = LoadRenderTexture(m_Width, m_Height);
+	}
+
+	BeginTextureMode(m_Background);
+	ClearBackground(Color{});
+
+	Draw();
+
+	EndTextureMode();
+}
+
 void Grid::Draw()
 {
 	int cols = m_Width / m_CellSize;
@@ -25,6 +40,13 @@ void Grid::Draw()
 		color1 = color2;
 		color2 = currentColor;
 	}
+}
+
+void Grid::DrawBackground()
+{
+	DrawTextureRec(m_Background.texture,
+		Rectangle{ 0, 0, (float)m_Width, (float)m_Height },
+		Vector2{}, Color{ 255, 255, 255, 255 });
 }
 
 void Grid::DrawAppleAt(const Vector2& position)
