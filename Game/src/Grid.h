@@ -18,6 +18,9 @@ public:
 	Grid(const Grid&) = delete;
 	Grid(Grid&&) noexcept = delete;
 
+	void Init();
+	void Cleanup();
+
 	void SetUpdateTime(float time);
 	void SetHeadDirection(const Vector2& direction);
 
@@ -35,9 +38,10 @@ public:
 	inline const std::vector<Tale>& GetTales() const { return m_Tales; }
 
 	void Update(float deltaTime);
+
+	bool HasPlayerEatenTail() const;
 private:
 	bool HasPlayerPickedApple();
-	bool HasPlayerEatenTail();
 
 	void UpdateTalesPosition();
 	void UpdateApplePosition();
@@ -53,7 +57,7 @@ private:
 	int m_Height;
 	int m_CellSize;
 
-	float m_UpdateTime = 0.25;
+	float m_UpdateTime = 0.16;
 	float m_Timer = 0;
 
 	Color m_TaleColor1{ 120, 0, 0, 255 };

@@ -6,6 +6,8 @@ void Game::Init()
 {
 	InitWindow(m_Width, m_Height, "SnakeGame");
 	m_WindowHandle = GetWindowHandle();
+
+	m_Grid.Init();
 }
 
 void Game::Update()
@@ -53,5 +55,13 @@ void Game::HandleInput()
 	else if (keyCode == KEY_D)
 	{
 		m_Grid.SetHeadDirection(Grid::Right);
+	}
+
+	if (m_Grid.HasPlayerEatenTail() && keyCode == KEY_SPACE)
+	{
+		m_Grid.Cleanup();
+		m_Grid.Init();
+
+		m_Grid.SetHeadDirection(Grid::Up);
 	}
 }

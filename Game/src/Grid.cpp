@@ -14,7 +14,23 @@ Grid::Grid(int width, int height, int cellSize)
 	srand(time(0));
 	m_Tales.reserve(50);
 
-	m_Tales.push_back(Tale{ {11, 8}, m_TaleColor2 });
+}
+
+void Grid::Init()
+{
+	Vector2 gridSize = GetGridSize();
+
+	Vector2 position{
+		static_cast<float>(rand() % (int)gridSize.x),
+		static_cast<float>(rand() % (int)gridSize.y)
+	};
+
+	m_Tales.push_back(Tale{ position, m_TaleColor2});
+}
+
+void Grid::Cleanup()
+{
+	m_Tales.clear();
 }
 
 void Grid::SetUpdateTime(float time)
@@ -53,7 +69,7 @@ bool Grid::HasPlayerPickedApple()
 		m_Tales[0].Positon.y == m_ApplePosition.y;
 }
 
-bool Grid::HasPlayerEatenTail()
+bool Grid::HasPlayerEatenTail() const
 {
 	const Tale& head = m_Tales[0];
 
@@ -172,7 +188,14 @@ void GridRenderer::Draw(const Grid& grid)
 		DrawTale(tale);
 	}
 
-	DrawText(TextFormat("Score: %i", tales.size() - 1), 0, 0, 24, Color{ 0, 0, 0, 255 });
+	if (!grid.HasPlayerEatenTail())
+	{
+		DrawText(TextFormat("Score: %i", tales.size() - 1), 0, 0, 24, Color{ 0, 0, 0, 255 });
+	}
+	else
+	{
+		DrawText(TextFormat("Your score is %i\nPress SPACE to play again", tales.size() - 1), (m_Width - 12 * 24) / 2, (m_Height - 24) / 2, 24, Color{ 0, 0, 0, 255 });
+	}
 
 	EndDrawing();
 }
