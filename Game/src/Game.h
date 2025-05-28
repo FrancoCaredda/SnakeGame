@@ -21,6 +21,7 @@ private:
 	void UpdateApplePosition();
 
 	bool HasPlayerPickedApple();
+	bool HasPlayerEatenTail();
 private:
 	void* m_WindowHandle = nullptr;
 	Grid m_Grid{1200, 900, 50};

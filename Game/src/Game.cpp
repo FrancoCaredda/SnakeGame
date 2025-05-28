@@ -17,6 +17,8 @@ void Game::Init()
 	m_Grid.BakeBackground();
 
 	m_HeadDirection = Up;
+
+	srand(time(0));
 }
 
 void Game::Update()
@@ -27,21 +29,24 @@ void Game::Update()
 	{
 		timer += GetDeltaTime();
 
-		UpdateHeadDirection();
-		if (timer >= 0.25)
+		if (!HasPlayerEatenTail())
 		{
-			UpdateTalesPosition();
-			timer = 0;
-		}
+			UpdateHeadDirection();
+			if (timer >= 0.25)
+			{
+				UpdateTalesPosition();
+				timer = 0;
+			}
 
-		if (HasPlayerPickedApple())
-		{
-			UpdateApplePosition();
+			if (HasPlayerPickedApple())
+			{
+				UpdateApplePosition();
 
-			const Tale& lastTail = m_Tales[m_Tales.size() - 1];
-			Color color = ((m_Tales.size() + 1) % 2) ? m_TaleColor2 : m_TaleColor1;
+				const Tale& lastTail = m_Tales[m_Tales.size() - 1];
+				Color color = ((m_Tales.size() + 1) % 2) ? m_TaleColor2 : m_TaleColor1;
 
-			m_Tales.push_back(Tale{ lastTail.Positon, color });
+				m_Tales.push_back(Tale{ {-1, -1}, color });
+			}
 		}
 
 		BeginDrawing();
@@ -54,7 +59,7 @@ void Game::Update()
 		{
 			m_Grid.DrawTale(tale);
 		}
-		DrawFPS(100, 100);
+		DrawText(TextFormat("Score: %i", m_Tales.size() - 1), 0, 0, 24, Color{0, 0, 0, 255});
 
 		EndDrawing();
 	}
@@ -99,21 +104,39 @@ void Game::UpdateHeadDirection()
 }
 void Game::UpdateTalesPosition()
 {
-	Vector2 GridSize = m_Grid.GetGridSize();
+	Vector2 gridSize = m_Grid.GetGridSize();
 
 	for (int i = m_Tales.size() - 1; i >= 1; i--)
 	{
 		m_Tales[i].Positon = m_Tales[i - 1].Positon;
 	}
 
-	m_Tales[0].Positon.x += m_HeadDirection.x;
-	m_Tales[0].Positon.y += m_HeadDirection.y;
+	Tale& head = m_Tales[0];
+
+	head.Positon.x += m_HeadDirection.x;
+	head.Positon.y += m_HeadDirection.y;
+
+	if (head.Positon.x < 0)
+	{
+		head.Positon.x = gridSize.x - 1;
+	}
+	else if (head.Positon.x >= gridSize.x)
+	{
+		head.Positon.x = 0;
+	}
+
+	if (head.Positon.y < 0)
+	{
+		head.Positon.y = gridSize.y - 1;
+	}
+	else if (head.Positon.y >= gridSize.y)
+	{
+		head.Positon.y = 0;
+	}
 }
 
 void Game::UpdateApplePosition()
 {
-	srand(time(0));
-
 	Vector2 gridSize = m_Grid.GetGridSize();
 
 	m_ApplePosition.x = rand() % (int)gridSize.x;
@@ -124,4 +147,20 @@ bool Game::HasPlayerPickedApple()
 {
 	return m_Tales[0].Positon.x == m_ApplePosition.x &&
 		   m_Tales[0].Positon.y == m_ApplePosition.y;
+}
+
+bool Game::HasPlayerEatenTail()
+{
+	const Tale& head = m_Tales[0];
+
+	for (int i = 1; i < m_Tales.size(); i++)
+	{
+		if (head.Positon.x == m_Tales[i].Positon.x &&
+			head.Positon.y == m_Tales[i].Positon.y)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
