@@ -3,6 +3,7 @@
 #include "raylib.h"
 
 #include <cmath>
+#include <vector>
 
 struct Tale
 {
@@ -13,12 +14,66 @@ struct Tale
 class Grid
 {
 public:
-	Grid(int width, int height, int cellSize)
-		: m_Width(width), m_Height(height), m_CellSize(cellSize) {}
+	Grid(int width, int height, int cellSize);
 	Grid(const Grid&) = delete;
 	Grid(Grid&&) noexcept = delete;
 
-	~Grid()
+	void SetUpdateTime(float time);
+	void SetHeadDirection(const Vector2& direction);
+
+	inline Vector2 GetGridSize() const
+	{
+		return Vector2{ std::ceilf(m_Width / m_CellSize),
+				std::ceilf(m_Height / m_CellSize) };
+	}
+
+	inline int GetWidth() const { return m_Width; }
+	inline int GetHeight() const { return m_Height; }
+	inline int GetCellSize() const { return m_CellSize; }
+
+	inline Vector2 GetApplePosition() const { return m_ApplePosition; }
+	inline const std::vector<Tale>& GetTales() const { return m_Tales; }
+
+	void Update(float deltaTime);
+private:
+	bool HasPlayerPickedApple();
+	bool HasPlayerEatenTail();
+
+	void UpdateTalesPosition();
+	void UpdateApplePosition();
+
+	void AddTail();
+private:
+	std::vector<Tale> m_Tales;
+
+	Vector2 m_HeadDirection = Up;
+	Vector2 m_ApplePosition{};
+
+	int m_Width;
+	int m_Height;
+	int m_CellSize;
+
+	float m_UpdateTime = 0.25;
+	float m_Timer = 0;
+
+	Color m_TaleColor1{ 120, 0, 0, 255 };
+	Color m_TaleColor2{ 193, 18, 31, 255 };
+public:
+	static const Vector2 Up;
+	static const Vector2 Down;
+	static const Vector2 Left;
+	static const Vector2 Right;
+};
+
+class GridRenderer
+{
+public:
+	GridRenderer(int width, int height, int cellSize)
+		: m_Width(width), m_Height(height), m_CellSize(cellSize) {}
+	GridRenderer(const GridRenderer&) = delete;
+	GridRenderer(GridRenderer&&) noexcept = delete;
+
+	~GridRenderer()
 	{
 		if (IsTextureValid(m_Background.texture))
 		{
@@ -26,18 +81,18 @@ public:
 		}
 	}
 
-
-	void BakeBackground();
-
-	void Draw();
-	void DrawBackground();
-	void DrawAppleAt(const Vector2& position);
-	void DrawTale(const Tale& tale);
+	void Draw(const Grid& grid);
 
 	inline Vector2 GetGridSize() const 
 	{ 
 		return Vector2{ std::ceilf(m_Width / m_CellSize), std::ceilf(m_Height / m_CellSize) };
 	}
+private:
+	void BakeBackground();
+
+	void DrawBackground();
+	void DrawAppleAt(const Vector2& position);
+	void DrawTale(const Tale& tale);
 private:
 	int m_Width;
 	int m_Height;
